@@ -5,8 +5,35 @@ from sty import fg, bg, ef, rs
 
 #from unpywall.utils import UnpywallCredentials
 #
-#UnpywallCredentials('ycarissan@gmail.com')
+#UnpywallCredentials('toto@gmail.com')
 
+name="Paola"
+#name="Denis"
+#name="Stéphane"
+#name="Gwang-Hi"
+#name="Yannick"
+
+if name=="Paola":
+    halid="paola-nava"
+    firstname="Paola"
+    lastname="NAVA"
+elif name=="Denis":
+    halid="denis-hagebaum-reignier"
+    firstname="Denis"
+    lastname="HAGEBAUM-REIGNIER"
+elif name=="Stéphane":
+    halid="stephane-humbel"
+    firstname="Stéphane"
+    lastname="HUMBEL"
+elif name=="Gwang-Hi":
+    halid="gwang-hi-jeung"
+    firstname="Gwang-Hi"
+    lastname="JEUNG"
+elif name=="Yannick":
+    halid="yannickcarissan"
+    firstname="Yannick"
+    lastname="CARISSAN"
+    
 now = datetime.datetime.now()
 this_year = now.year
 
@@ -59,4 +86,6 @@ for doc in docs:
     dict_doc["doiid"]   = doiid
     dict_doc["hal_ok"]  = hal_ok
     df = df.append(dict_doc, ignore_index=True)
+df.index=[i for i in range(1,number_of_docs+1)]
+#print(df[["authors", "title", "year", "doiid", "halid", "hal_ok"]])
 print(df)
