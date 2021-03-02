@@ -29,6 +29,10 @@ elif name=="Gwang-Hi":
     halid="gwang-hi-jeung"
     firstname="Gwang-Hi"
     lastname="JEUNG"
+elif name=="Jean-Marc":
+    halid="jean-marc-mattalia"
+    firstname="Jean-Marc"
+    lastname="MATTALIA"
 elif name=="Yannick":
     halid="yannickcarissan"
     firstname="Yannick"
@@ -87,5 +91,4 @@ for doc in docs:
     dict_doc["hal_ok"]  = hal_ok
     df = df.append(dict_doc, ignore_index=True)
 df.index=[i for i in range(1,number_of_docs+1)]
-#print(df[["authors", "title", "year", "doiid", "halid", "hal_ok"]])
-print(df)
+print(df[["year", "doiid", "halid", "hal_ok"]].to_markdown())
