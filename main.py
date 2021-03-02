@@ -17,23 +17,63 @@ response_dec = r.json()
 number_of_docs = response_dec["response"]["numFound"]
 docs = response_dec["response"]["docs"]
 print("Number of documents : {}".format(number_of_docs))
-for yy in range(this_year, 2000, -1):
-    print("Documents published in {} :".format(yy))
-    for doc in docs:
-        if doc["producedDateY_i"] == yy:
-            docid = doc["docid"]
-            halid = doc["halId_s"]
-            title = doc["title_s"][0]
-            try:
-                doiid = doc["doiId_s"]
-            except:
-                doiid = "n/a"
-            try:
-                file_attached = doc["files_s"][0]
-            except:
-                file_attached = None
-            if (file_attached!=None):
-                hal_ok = fg.green + "\U00002714" + fg.rs
-            else:
-                hal_ok = fg.red + "\U00002718" + fg.rs
-            print("hal-did : {} DOI : {} Title : {}... {}".format(halid, doiid, title[:40], hal_ok))
+# for yy in range(this_year, 2000, -1):
+#     print("Documents published in {} :".format(yy))
+#     for doc in docs:
+#         if doc["producedDateY_i"] == yy:
+#             docid = doc["docid"]
+#             halid = doc["halId_s"]
+#             title = doc["title_s"][0]
+#             try:
+#                 doiid = doc["doiId_s"]
+#             except:
+#                 doiid = "n/a"
+#             try:
+#                 file_attached = doc["files_s"][0]
+#             except:
+#                 file_attached = None
+#             if (file_attached!=None):
+#                 hal_ok = fg.green + "\U00002714" + fg.rs
+#             else:
+#                 hal_ok = fg.red + "\U00002718" + fg.rs
+#             print("hal-did : {} DOI : {} Title : {}... {}".format(halid, doiid, title[:40], hal_ok))
+
+df = pd.DataFrame()
+for doc in docs:
+    doctype = doc["docType_s"]
+    docid = doc["docid"]
+    halid = doc["halId_s"]
+    title = doc["title_s"][0]
+    authors_full_name=""
+    for auth in doc["authFullName_s"]:
+        if len(authors_full_name)>0:
+            authors_full_name = authors_full_name + ", " + auth
+        else:
+            authors_full_name = auth
+
+    date = doc["producedDate_s"]
+    year = doc["producedDateY_i"]
+    try:
+        doiid = doc["doiId_s"]
+    except:
+        doiid = "n/a"
+    try:
+        file_attached = doc["files_s"][0]
+    except:
+        file_attached = None
+    if (file_attached!=None):
+        hal_ok = fg.green + "\U00002714" + fg.rs
+    else:
+        hal_ok = fg.red + "\U00002718" + fg.rs
+    dict_doc = {}
+    dict_doc["doctype"] = doctype
+    dict_doc["docid"]   = docid
+    dict_doc["halid"]   = halid
+    dict_doc["title"]   = title
+    dict_doc["authors"] = authors_full_name
+    dict_doc["date"]    = date
+    dict_doc["year"]    = year
+    dict_doc["doiid"]   = doiid
+    dict_doc["hal_ok"]  = hal_ok
+    df = df.append(dict_doc, ignore_index=True)
+print(df)
