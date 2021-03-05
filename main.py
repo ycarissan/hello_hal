@@ -2,6 +2,7 @@ import requests
 import datetime
 import pandas as pd
 from sty import fg, bg, ef, rs
+import sqlite3 as sql
 
 #from unpywall.utils import UnpywallCredentials
 #
@@ -11,7 +12,7 @@ name="Paola"
 #name="Denis"
 #name="Stéphane"
 #name="Gwang-Hi"
-#name="Yannick"
+name="Yannick"
 
 if name=="Paola":
     halid="paola-nava"
@@ -44,7 +45,7 @@ this_year = now.year
 halid="yannickcarissan"
 firstname="Yannick"
 lastname="CARISSAN"
-r=requests.get("https://api.archives-ouvertes.fr/search//?q=(authIdHal_s:{}%20OR%20authFullName_sci:%22{}%20{}%22)%20AND%20docType_s:ART&rows=10000&sort=producedDate_tdate%20desc&fl=docid,docType_s,authFullName_s,authAlphaLastNameFirstNameId_fs,title_s,number_s,producedDate_s,producedDateY_i,files_s,label_s,label_xml,halId_s,doiId_s".format(halid,firstname,lastname))
+r=requests.get("https://api.archives-ouvertes.fr/search//?q=(authIdHal_s:{}%20OR%20authFullName_sci:%22{}%20{}%22)%20AND%20docType_s:ART&rows=10000&sort=producedDate_tdate%20desc&fl=docid,docType_s,authFullName_s,authAlphaLastNameFirstNameId_fs,title_s,number_s,producedDate_s,producedDateY_i,files_s,label_s,label_xml,halId_s,doiId_s,collCode_s".format(halid,firstname,lastname))
 
 response_dec = r.json()
 
@@ -64,7 +65,15 @@ for doc in docs:
             authors_full_name = authors_full_name + ", " + auth
         else:
             authors_full_name = auth
-
+    coll  = ""
+    try:
+        for c in doc["collCode_s"]:
+            if len(coll)>0:
+                coll = coll + ", " + c
+            else:
+                coll = c
+    except:
+        coll="n/a"
     date = doc["producedDate_s"]
     year = doc["producedDateY_i"]
     try:
@@ -89,6 +98,10 @@ for doc in docs:
     dict_doc["year"]    = year
     dict_doc["doiid"]   = doiid
     dict_doc["hal_ok"]  = hal_ok
+    dict_doc["coll"]    = coll
     df = df.append(dict_doc, ignore_index=True)
 df.index=[i for i in range(1,number_of_docs+1)]
-print(df[["year", "doiid", "halid", "hal_ok"]].to_markdown())
+print(df[["year", "doiid", "halid", "hal_ok", "coll"]].to_markdown())
+
+conn = sql.connect('biblio.db')
+df.to_sql('biblio', conn)
