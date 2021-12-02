@@ -5,6 +5,11 @@ from sty import fg, bg, ef, rs
 import sqlite3 as sql
 from pyexcel_ods import save_data
 
+data = OrderedDict()
+data.update({"Sheet 1": [[1, 2, 3], [4, 5, 6]]})
+data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
+save_data("your_file.ods", data)
+
 #from unpywall.utils import UnpywallCredentials
 #
 #UnpywallCredentials('toto@gmail.com')
